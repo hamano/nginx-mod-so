@@ -61,12 +61,14 @@ ngx_http_so(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 
 	handle = dlopen(so_file, RTLD_LAZY);
 	if(!handle){
-		fprintf(stderr, "dlerror: %s\n", dlerror());
+		ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
+                           "dlopen error: %s", dlerror());
 		return NGX_CONF_ERROR;
 	}
 	so_sym = dlsym(handle, so_mod);
 	if(!so_sym){
-		fprintf(stderr, "dlerror: %s\n", dlerror());
+		ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
+                           "dlsym error: %s", dlerror());
 		return NGX_CONF_ERROR;
 	}
 
