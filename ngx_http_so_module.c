@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) Tsukasa Hamano <hamano@osstech.co.jp>
+ */
 
 #include <dlfcn.h>
 
@@ -46,35 +49,43 @@ ngx_module_t  ngx_http_so_module = {
     NGX_MODULE_V1_PADDING
 };
 
+static int so_num = 0;
+static int so_max = 10; // see objs/ngx_modules.c
+
 static char *
 ngx_http_so(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 {
     ngx_http_core_loc_conf_t  *clcf;
-	void *handle;
-	ngx_module_t *so_sym;
-	ngx_str_t *value = cf->args->elts;
-	char *so_mod = (char *)value[1].data;
-	char *so_file = (char *)value[2].data;
-	int i;
+    void *handle;
+    ngx_module_t *sym;
+    ngx_str_t *value = cf->args->elts;
+    char *symname = (char *)value[1].data;
+    char *filename = (char *)value[2].data;
+    int i;
 
     clcf = ngx_http_conf_get_module_loc_conf(cf, ngx_http_core_module);
-
-	handle = dlopen(so_file, RTLD_LAZY);
-	if(!handle){
-		ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
+    handle = dlopen(filename, RTLD_LAZY);
+    if(!handle){
+        ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
                            "dlopen error: %s", dlerror());
-		return NGX_CONF_ERROR;
-	}
-	so_sym = dlsym(handle, so_mod);
-	if(!so_sym){
-		ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
+        return NGX_CONF_ERROR;
+    }
+    sym = dlsym(handle, symname);
+    if(!sym){
+        ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
                            "dlsym error: %s", dlerror());
-		return NGX_CONF_ERROR;
-	}
+        return NGX_CONF_ERROR;
+    }
 
-	for(i=0; ngx_modules[i]; i++){}
-	ngx_modules[i] = so_sym;
+    for(i=0; ngx_modules[i]; i++){}
+    if(so_num < so_max){
+        ngx_modules[i] = sym;
+        so_num++;
+    }else{
+        ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
+                           "so_max limit reached.");
+        return NGX_CONF_ERROR;
+    }
 
-	//dlclose(handle);
     return NGX_CONF_OK;
 }
