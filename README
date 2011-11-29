@@ -1,1 +1,22 @@
-write tomorrow
+nginx_mod_so
+============
+
+Nginx DSO module
+
+# Usage
+
+1. build nginx with mod_so
+    % ./configure --add-module=<NGINX_MOD_SO_DIR>
+
+2. compile shared module
+
+3. configuration
+
+    http {
+        module ngx_http_exmple_module ./example.so;
+        ...
+        location = /example {
+            example;
+        }
+        ...
+    }
