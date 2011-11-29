@@ -1,0 +1,34 @@
+diff --git a/auto/cc/conf b/auto/cc/conf
+index bdcce2c..effa360 100644
+--- a/auto/cc/conf
++++ b/auto/cc/conf
+@@ -2,7 +2,7 @@
+ # Copyright (C) Igor Sysoev
+ 
+ 
+-LINK="\$(CC)"
++LINK="\$(CC) -rdynamic"
+ 
+ ngx_include_opt="-I "
+ ngx_compile_opt="-c"
+diff --git a/auto/modules b/auto/modules
+index b13bcb2..db7d220 100644
+--- a/auto/modules
++++ b/auto/modules
+@@ -472,6 +472,16 @@ do
+ done
+ 
+ cat << END                                    >> $NGX_MODULES_C
++    NULL,
++    NULL,
++    NULL,
++    NULL,
++    NULL,
++    NULL,
++    NULL,
++    NULL,
++    NULL,
++    NULL,
+     NULL
+ };
+ 

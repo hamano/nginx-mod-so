@@ -6,7 +6,14 @@ Nginx DSO module
 # Usage
 
 1. build nginx with mod_so
+    # move to nginx souse directory
+    % cd nginx-1.0.9
+
+    # apply patch
+    % patch -p1 < <NGINX_MOD_SO_DIR>/nginx-1.0.9-mod-so.patch
+
     % ./configure --add-module=<NGINX_MOD_SO_DIR>
+    % make
 
 2. compile shared module
 
