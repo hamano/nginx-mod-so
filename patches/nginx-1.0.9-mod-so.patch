@@ -12,10 +12,10 @@ index bdcce2c..effa360 100644
  ngx_include_opt="-I "
  ngx_compile_opt="-c"
 diff --git a/auto/modules b/auto/modules
-index b13bcb2..844f687 100644
+index b13bcb2..da2e74b 100644
 --- a/auto/modules
 +++ b/auto/modules
-@@ -466,11 +466,30 @@ done
+@@ -466,11 +466,24 @@ done
  echo                                          >> $NGX_MODULES_C
  echo 'ngx_module_t *ngx_modules[] = {'        >> $NGX_MODULES_C
  
@@ -28,19 +28,13 @@ index b13bcb2..844f687 100644
 +    fi
  done
  
++so_module_slot=16 # by default
++i=$so_module_slot
 +if [ $have_so_module = YES ]; then
-+cat << END                                    >> $NGX_MODULES_C
-+    NULL,
-+    NULL,
-+    NULL,
-+    NULL,
-+    NULL,
-+    NULL,
-+    NULL,
-+    NULL,
-+    NULL,
-+    NULL,
-+END
++    while [ ${i} -gt 0 ]; do
++        echo "    NULL,"                      >> $NGX_MODULES_C
++        let i=${i}-1;
++    done
 +fi
 +
  cat << END                                    >> $NGX_MODULES_C

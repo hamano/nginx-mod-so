@@ -50,7 +50,7 @@ ngx_module_t  ngx_http_so_module = {
 };
 
 static int so_num = 0;
-static int so_max = 10; // see objs/ngx_modules.c
+static int so_max = 16; // see auto/modules and objs/ngx_modules.c
 
 static char *
 ngx_http_so(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
