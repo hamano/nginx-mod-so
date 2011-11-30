@@ -25,8 +25,8 @@ nginx_mod_so is dynamic loadable module for Nginx.
 
 3. configuration
 
+    module ngx_http_exmple_module ./modules/example.so;
     http {
-        module ngx_http_exmple_module ./modules/example.so;
         ...
         location = /example {
             example;
