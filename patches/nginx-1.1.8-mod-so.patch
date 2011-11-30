@@ -12,7 +12,7 @@ index bdcce2c..effa360 100644
  ngx_include_opt="-I "
  ngx_compile_opt="-c"
 diff --git a/auto/modules b/auto/modules
-index a8607ee..58e3d05 100644
+index a8607ee..a9ccba5 100644
 --- a/auto/modules
 +++ b/auto/modules
 @@ -471,11 +471,24 @@ done
@@ -29,8 +29,8 @@ index a8607ee..58e3d05 100644
  done
  
 +so_module_slot=16 # by default
-+i=$so_module_slot
 +if [ $have_so_module = YES ]; then
++    i=$so_module_slot
 +    while [ ${i} -gt 0 ]; do
 +        echo "    NULL,"                      >> $NGX_MODULES_C
 +        let i=${i}-1;
