@@ -6,6 +6,7 @@ Nginx DSO module
 # Usage
 
 1. build nginx with mod_so
+
     # move to nginx souse directory
     % cd nginx-1.0.9
 
@@ -17,13 +18,19 @@ Nginx DSO module
 
 2. compile shared module
 
+    % cd example
+    % make NGINX_DIR=<NGINX_BUILD_DIR>
+    % mkdir <NGINX_INSTALLED_DIR>/modules
+    % cp example.so <NGINX_INSTALLED_DIR>/modules/
+
 3. configuration
 
     http {
-        module ngx_http_exmple_module ./example.so;
+        module ngx_http_exmple_module ./modules/example.so;
         ...
         location = /example {
             example;
         }
         ...
     }
+
