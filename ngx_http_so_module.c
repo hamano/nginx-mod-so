@@ -61,7 +61,6 @@ ngx_http_so(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
     ngx_str_t *value = cf->args->elts;
     char *symname = (char *)value[1].data;
     char *filename = (char *)value[2].data;
-    int i;
 
     clcf = ngx_http_conf_get_module_loc_conf(cf, ngx_http_core_module);
     handle = dlopen(filename, RTLD_LAZY);
@@ -77,15 +76,15 @@ ngx_http_so(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
         return NGX_CONF_ERROR;
     }
 
-    for(i=0; ngx_modules[i]; i++){}
-    if(so_num < so_max){
-        ngx_modules[i] = sym;
-        so_num++;
-    }else{
+    if(so_num >= so_max){
         ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
                            "so_max limit reached.");
         return NGX_CONF_ERROR;
     }
+    ngx_modules[ngx_max_module] = sym;
+    ngx_modules[ngx_max_module]->index = ngx_max_module;
+    ngx_max_module++;
+    so_num++;
 
     return NGX_CONF_OK;
 }
