@@ -58,9 +58,12 @@ ngx_http_so(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
     ngx_http_core_loc_conf_t  *clcf;
     void *handle;
     ngx_module_t *sym;
+    ngx_http_module_t *module;
     ngx_str_t *value = cf->args->elts;
     char *symname = (char *)value[1].data;
     char *filename = (char *)value[2].data;
+    ngx_uint_t mi;
+    ngx_http_conf_ctx_t *ctx = cf->ctx;
 
     clcf = ngx_http_conf_get_module_loc_conf(cf, ngx_http_core_module);
     handle = dlopen(filename, RTLD_LAZY);
@@ -81,9 +84,36 @@ ngx_http_so(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
                            "so_max limit reached.");
         return NGX_CONF_ERROR;
     }
-    ngx_modules[ngx_max_module] = sym;
-    ngx_modules[ngx_max_module]->index = ngx_max_module;
-    ngx_max_module++;
+
+    sym->index = ngx_max_module;
+    if(sym->type == NGX_HTTP_MODULE){
+        sym->ctx_index = ngx_http_max_module++;
+        mi = sym->ctx_index;
+        module = sym->ctx;
+
+        if (module->create_main_conf) {
+            ctx->main_conf[mi] = module->create_main_conf(cf);
+            if (ctx->main_conf[mi] == NULL) {
+                return NGX_CONF_ERROR;
+            }
+        }
+
+        if (module->create_srv_conf) {
+            ctx->srv_conf[mi] = module->create_srv_conf(cf);
+            if (ctx->srv_conf[mi] == NULL) {
+                return NGX_CONF_ERROR;
+            }
+        }
+
+        if (module->create_loc_conf) {
+            ctx->loc_conf[mi] = module->create_loc_conf(cf);
+            if (ctx->loc_conf[mi] == NULL) {
+                return NGX_CONF_ERROR;
+            }
+        }
+    }
+
+    ngx_modules[ngx_max_module++] = sym;
     so_num++;
 
     return NGX_CONF_OK;
