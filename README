@@ -1,7 +1,7 @@
-nginx_mod_so
-============
+nginx_mod_so - Nginx DSO module
+===============================
 
-Nginx DSO module
+nginx_mod_so is dynamic loadable module for Nginx.
 
 # Usage
 
@@ -34,3 +34,6 @@ Nginx DSO module
         ...
     }
 
+# Author
+
+Tsukasa Hamano <hamano@osstech.co.jp>

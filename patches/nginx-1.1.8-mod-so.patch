@@ -1,0 +1,48 @@
+diff --git a/auto/cc/conf b/auto/cc/conf
+index bdcce2c..effa360 100644
+--- a/auto/cc/conf
++++ b/auto/cc/conf
+@@ -2,7 +2,7 @@
+ # Copyright (C) Igor Sysoev
+ 
+ 
+-LINK="\$(CC)"
++LINK="\$(CC) -rdynamic"
+ 
+ ngx_include_opt="-I "
+ ngx_compile_opt="-c"
+diff --git a/auto/modules b/auto/modules
+index a8607ee..14095cc 100644
+--- a/auto/modules
++++ b/auto/modules
+@@ -471,11 +471,30 @@ done
+ echo                                          >> $NGX_MODULES_C
+ echo 'ngx_module_t *ngx_modules[] = {'        >> $NGX_MODULES_C
+ 
++have_so_module="NO"
+ for mod in $modules
+ do
+     echo "    &$mod,"                         >> $NGX_MODULES_C
++    if [ $mod = ngx_http_so_module ]; then
++        have_so_module="YES"
++    fi
+ done
+ 
++if [ $have_so_module = YES ]; then
++cat << END                                    >> $NGX_MODULES_C
++    NULL,
++    NULL,
++    NULL,
++    NULL,
++    NULL,
++    NULL,
++    NULL,
++    NULL,
++    NULL,
++    NULL,
++END
++fi
++
+ cat << END                                    >> $NGX_MODULES_C
+     NULL
+ };
