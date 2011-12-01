@@ -21,11 +21,11 @@ nginx_mod_so is dynamic loadable module for Nginx.
     % cd example
     % make NGINX_DIR=<NGINX_BUILD_DIR>
     % mkdir <NGINX_INSTALLED_DIR>/modules
-    % cp example.so <NGINX_INSTALLED_DIR>/modules/
+    % cp http_example.so <NGINX_INSTALLED_DIR>/modules/
 
 3. configuration
 
-    module ngx_http_exmple_module ./modules/example.so;
+    module ./modules/http_example.so;
     http {
         ...
         location = /example {
