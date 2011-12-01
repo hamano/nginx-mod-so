@@ -98,6 +98,13 @@ ngx_so(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
     int i;
 
     ngx_conf_log_error(NGX_LOG_DEBUG, cf, 0, "loading %s", filename);
+
+    if(so_num >= so_max){
+        ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
+                           "so_max limit reached.");
+        return NGX_CONF_ERROR;
+    }
+
     handle = dlopen(filename, RTLD_LAZY);
     if(!handle){
         ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
@@ -108,6 +115,7 @@ ngx_so(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
     if(ngx_so_check_abi(cf, handle) != NGX_OK){
         ngx_conf_log_error(NGX_LOG_ERR, cf, 0,
                            "abi version missmatch %s", filename);
+        dlclose(handle);
         return NGX_CONF_ERROR;
     }
 
@@ -115,12 +123,7 @@ ngx_so(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
     if(!module){
         ngx_conf_log_error(NGX_LOG_ERR, cf, 0,
                            "cannot find module symbol %s", filename);
-        return NGX_CONF_ERROR;
-    }
-
-    if(so_num >= so_max){
-        ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
-                           "so_max limit reached.");
+        dlclose(handle);
         return NGX_CONF_ERROR;
     }
 
