@@ -7,7 +7,7 @@ nginx_mod_so is dynamic loadable module for Nginx.
 
 1. build nginx with mod_so
 
-    # move to nginx souse directory
+    # move to nginx source directory
     % cd nginx-1.0.9
 
     # apply patch
